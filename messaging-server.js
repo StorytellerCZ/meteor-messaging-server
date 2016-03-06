@@ -14,6 +14,8 @@ Meteor.publish("searchForUsers", function(query, excluded){
 Meteor.publish("conversation", function(conversationId){
   check(conversationId, String)
 
+  let options = {}
+
   if(!this.userId){
     return this.ready()
   }
@@ -23,7 +25,7 @@ Meteor.publish("conversation", function(conversationId){
   Meteor.publishWithRelations({
       handle: this,
       collection: Meteor.participants,
-      options:options,
+      options: options,
       filter: {conversationId: conversationId, deleted:{$exists:false}},
       mappings: [{
           key: 'conversationId',
