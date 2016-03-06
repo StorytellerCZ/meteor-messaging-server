@@ -1,2 +1,3 @@
 # meteor-messaging-server
-Publish functions for `socialize:messaging`
+
+Server functionality for `socialize:messaging`
