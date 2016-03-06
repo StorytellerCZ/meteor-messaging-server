@@ -18,7 +18,34 @@ Meteor.publish("conversation", function(conversationId){
     return this.ready()
   }
 
-  return Meteor.conversations.find({_id: conversationId, deleted: {$exists:false}}, {limit: 1})
+  //return Meteor.conversations.find({_id: conversationId, deleted: {$exists:false}}, {limit: 1})
+
+  Meteor.publishWithRelations({
+      handle: this,
+      collection: Meteor.participants,
+      options:options,
+      filter: {conversationId: conversationId, deleted:{$exists:false}},
+      mappings: [{
+          key: 'conversationId',
+          collection: Meteor.conversations,
+          mappings:[{
+              key: "conversationId",
+              collection: Meteor.participants,
+              filter: {userId:{$ne:this.userId}},
+              reverse:true,
+              mappings:[{
+                  key:"userId",
+                  collection:Meteor.users,
+                  options:{fields:{username:true}}
+              }]
+          },{
+              reverse:true,
+              key: "conversationId",
+              collection: Meteor.messages,
+              options:{limit:1, sort:{date:-1}}
+          }]
+      }]
+  })
 })
 
 /**
@@ -28,7 +55,7 @@ Meteor.methods({
   countMessages:function(conversationId){
     check(conversationId, String)
 
-    return Meteor.messages.find({conversationId: conversationId}).count()
+    return Meteor.messages.find({conversationId: conversationId}, {fields: {conversationId: 1}}).count()
   }
 });
 

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.1.2 - 2016/3/07
+
+## Changes
+
+*   Updated publish for "conversation" to include all the necessary connections for full use.
+
 ## v0.1.1 - 2016/3/06
 
 ### New
