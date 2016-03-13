@@ -1,15 +1,29 @@
+let publicationOptionsSchema = new SimpleSchema({
+  limit:{
+    type: Number,
+    optional: true
+  },
+  skip:{
+    type: Number,
+    optional: true
+  },
+  sort:{
+    type: Number,
+    optional: true
+  }
+})
+
 /**
  * Searches for users
  */
 Meteor.publish("searchForUsers", function(query, excluded){
   check(query, String)
-  check(excluded, Array)
+  check(excluded, [String])
   return Meteor.users.find({username: {$regex: query, $options: 'i'}, _id: {$nin: excluded}}, {fields: {username: 1, roles: 1},limit: 10})
 })
 
 /**
  * Gets the specified conversation
- * NOTE: Is not full conversation with all the function
  */
 Meteor.publish("conversation", function(conversationId){
   check(conversationId, String)
@@ -19,8 +33,6 @@ Meteor.publish("conversation", function(conversationId){
   if(!this.userId){
     return this.ready()
   }
-
-  //return Meteor.conversations.find({_id: conversationId, deleted: {$exists:false}}, {limit: 1})
 
   Meteor.publishWithRelations({
       handle: this,
@@ -65,20 +77,21 @@ Meteor.methods({
  * The following are publish options from the official package + fix for #8
  * These will be activated once the socialize package is updated to exclude these.
  */
- /*
 Meteor.publish("conversations", function (options) {
-   this.unblock();
-   var currentUser;
+   this.unblock()
+   let currentUser
 
    if(!this.userId){
-       return this.ready();
+       return this.ready()
    }
 
-   options = options || {};
+   options = options || {}
 
-   options = _.pick(options, ["limit", "skip"]);
+   options = _.pick(options, ["limit", "skip"])
 
-   options.sort = {date:-1};
+   check(options, publicationOptionsSchema)
+
+   options.sort = {date:-1}
 
    Meteor.publishWithRelations({
        handle: this,
@@ -107,14 +120,12 @@ Meteor.publish("conversations", function (options) {
        }]
    });
 
-});
-*/
+})
+
 /**
 * Publish conversations that have not been read yet by the user
 */
-/*
 Meteor.publish("unreadConversations", function(){
-
    if(!this.userId){
        return this.ready();
    }
@@ -142,9 +153,8 @@ Meteor.publish("unreadConversations", function(){
                options:{limit:1, sort:{date:-1}}
            }]
        }]
-   });
-});
-*/
+   })
+})
 
 /**
 * Publish messages for a particular conversation
@@ -152,26 +162,27 @@ Meteor.publish("unreadConversations", function(){
 * @param   {Object}       options        Query options {limit:Number, skip:Number}
 * @returns {Mongo.Cursor} A cursor of messsages that belong to the current conversation
 */
-/*
 Meteor.publish("messagesFor", function(conversationId, options){
-   var self = this;
-   var user = User.createEmpty(self.userId);
+  check(conversationId, String)
 
-   options = options || {};
+  let user = User.createEmpty(this.userId)
 
-   self.unblock();
+  options = options || {}
 
-   if(!self.userId){
-       return this.ready();
-   }
+  check(options, publicationOptionsSchema)
 
-   var conversation = Conversation.createEmpty(conversationId);
+  this.unblock()
 
-   if(user.isParticipatingIn(conversation)){
-       return conversation.messages(options.limit, options.skip, "date", -1);
-   }
-});
-*/
+  if(!this.userId){
+    return this.ready()
+  }
+
+  let conversation = Conversation.createEmpty(conversationId)
+
+  if(user.isParticipatingIn(conversation)){
+    return conversation.messages(options.limit, options.skip, "date", -1)
+  }
+})
 
 /**
 * This publication when subscribed to, updates the state of the participant
@@ -181,57 +192,51 @@ Meteor.publish("messagesFor", function(conversationId, options){
 *
 * @param   {String}       conversationId The _id of the conversation the user is viewing
 */
-/*
 Meteor.publish("viewingConversation", function(conversationId){
-   this.unblock();
+  check(conversationId, String)
+  this.unblock()
 
-   if(!this.userId){
-       return this.ready();
-   }
+  if(!this.userId){
+    return this.ready()
+  }
 
-   var self = this;
-   var sessionId = this._session.id;
+  let sessionId = this._session.id
 
+  ParticipantsCollection.update({
+    conversationId:conversationId, userId: this.userId
+  },{
+   $addToSet:{observing:sessionId},
+   $set:{read:true},
+  })
 
-   ParticipantsCollection.update({
-       conversationId:conversationId, userId:self.userId
-   },{
-       $addToSet:{observing:sessionId},
-       $set:{read:true},
-   });
+  this.onStop(function () {
+    ParticipantsCollection.update({conversationId:conversationId, userId: this.userId}, {$pull:{observing:sessionId}});
+  })
 
-   self.onStop(function () {
-       ParticipantsCollection.update({conversationId:conversationId, userId:self.userId}, {$pull:{observing:sessionId}});
-   });
-
-   this.ready();
-});
-*/
+  this.ready()
+})
 
 /**
 * This publication when subscribed to sets the typing state of a participant in a conversation to true. When stopped it sets it to false.
 * @param   {String}   conversationId The _id of the conversation
 */
-/*
 Meteor.publish("typing", function(conversationId){
-   this.unblock();
+  check(conversationId, String)
+  this.unblock()
 
-   if(!this.userId){
-       return this.ready();
-   }
+  if(!this.userId){
+    return this.ready()
+  }
 
-   var self = this;
+  ParticipantsCollection.update({
+     conversationId:conversationId, userId: this.userId
+  },{
+     $set:{typing:true}
+  })
 
-   ParticipantsCollection.update({
-       conversationId:conversationId, userId:self.userId
-   },{
-       $set:{typing:true}
-   });
+  this.onStop(function () {
+     ParticipantsCollection.update({conversationId:conversationId, userId: this.userId}, {$set:{typing:false}})
+  })
 
-   self.onStop(function () {
-       ParticipantsCollection.update({conversationId:conversationId, userId:self.userId}, {$set:{typing:false}});
-   });
-
-   this.ready();
-});
-*/
+  this.ready()
+})

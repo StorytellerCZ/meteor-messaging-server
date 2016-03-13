@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.2.0 - 2016/3/14
+
+## Added
+
+*   Publications that were removed from socialize packages
+
+## Fixes
+
+*   Added checks
+
 ## v0.1.2 - 2016/3/07
 
 ## Changes
