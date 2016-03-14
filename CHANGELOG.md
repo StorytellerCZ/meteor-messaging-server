@@ -1,6 +1,12 @@
 # CHANGELOG
 
-## v0.2.0 - 2016/3/14
+## v0.1.4 - 2016/3/14
+
+## Fixes
+
+*   Removed duplicate publications that remained in `socialize:messaging`
+
+## v0.1.3 - 2016/3/14
 
 ## Added
 

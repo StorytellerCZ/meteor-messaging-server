@@ -1,6 +1,6 @@
 Package.describe({
   name: 'storyteller:messaging-server',
-  version: '0.1.3',
+  version: '0.1.4',
   summary: 'Server functionality for socialize:messaging',
   git: 'https://github.com/StorytellerCZ/meteor-messaging-server',
   documentation: 'README.md'
@@ -8,12 +8,13 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
-  api.use(['meteor', 'ecmascript', 'check']);
+  api.use(['meteor', 'accounts-base', 'ecmascript', 'check']);
 
   api.use([
     'tmeasday:publish-with-relations@0.2.0', // TODO change for lepozepo:publish-with-relations
     'meteorhacks:unblock@1.1.0',
     'socialize:messaging@0.5.0',
+    'socialize:user-model@0.1.7',
     'aldeed:simple-schema@1.5.3'
   ]);
 
