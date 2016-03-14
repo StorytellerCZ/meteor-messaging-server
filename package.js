@@ -12,7 +12,7 @@ Package.onUse(function(api) {
 
   api.use([
     'tmeasday:publish-with-relations@0.2.0', // TODO change for lepozepo:publish-with-relations
-    'meteorhacks:unblock@1.1.0'
+    'meteorhacks:unblock@1.1.0',
     'socialize:messaging@0.5.0',
     'aldeed:simple-schema@1.5.3'
   ]);
