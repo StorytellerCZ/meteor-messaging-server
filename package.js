@@ -8,13 +8,15 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
-  api.use('ecmascript');
+  api.use(['meteor', 'ecmascript', 'check']);
+
   api.use([
     'tmeasday:publish-with-relations@0.2.0', // TODO change for lepozepo:publish-with-relations
     'meteorhacks:unblock@1.1.0'
     'socialize:messaging@0.5.0',
     'aldeed:simple-schema@1.5.3'
-  ])
+  ]);
+
   api.addFiles(['messaging-server.js'], 'server');
 });
 
