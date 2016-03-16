@@ -1,10 +1,17 @@
 # CHANGELOG
 
+## v0.1.5 - 2013/3/16
+
+### Updates
+
+*   Dependency updates
+
 ## v0.1.4 - 2016/3/14
 
-## Fixes
+### Fixes
 
-*   Removed duplicate publications that remained in `socialize:messaging`
+*   Removed duplicate publications that remained in `socialize:messaging`.
+*   Added `socialize:user-model` to fix an issue with undefined `User` in `messagesFor` publication.
 
 ## v0.1.3 - 2016/3/14
 
