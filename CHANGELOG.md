@@ -1,6 +1,28 @@
 # CHANGELOG
 
-## v0.1.5 - 2013/3/16
+## v0.2.0 - 2016/12/21
+
+### New
+
+*   Readme
+
+### Breaking
+
+*   All publishes and methods have been renamed, refer to readme.
+
+### Updates
+
+*   Dependency updates
+*   ES2015
+*   Update Meteor version to 1.4
+*   Changed tmeasday:publish-with-relations to reywood:publish-composite@1.4.2
+
+
+### Removed
+
+*   meteorhacks:unblock
+
+## v0.1.5 - 2016/3/16
 
 ### Updates
 
