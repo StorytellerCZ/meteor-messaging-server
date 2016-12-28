@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.1 - 2016/12/27
+
+### Updates
+
+*    Updated dependencies
+
 ## v0.2.0 - 2016/12/21
 
 ### New
