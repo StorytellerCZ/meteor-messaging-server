@@ -1,6 +1,6 @@
 Package.describe({
   name: 'storyteller:messaging-server',
-  version: '0.2.1',
+  version: '0.3.0',
   summary: 'Server functionality for socialize:messaging',
   git: 'https://github.com/StorytellerCZ/meteor-messaging-server',
   documentation: 'README.md'
@@ -11,9 +11,9 @@ Package.onUse(function(api) {
   api.use(['meteor', 'accounts-base', 'ecmascript', 'check']);
 
   api.use([
-    'reywood:publish-composite@1.4.2',
-    'socialize:messaging@0.5.4',
-    'socialize:user-model@0.1.7',
+    'reywood:publish-composite@1.5.2',
+    'socialize:messaging@1.0.0',
+    'socialize:user-model@1.0.0',
     'aldeed:simple-schema@1.5.3'
   ]);
 
