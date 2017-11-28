@@ -1,25 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import SimpleSchema from 'simpl-schema';
 import { User } from 'meteor/socialize:user-model';
-import { Conversation } from 'meteor/socialize:messaging';
+import {
+  Conversation,
+  ConversationsCollection,
+  ParticipantsCollection,
+  MessagesCollection,
+} from 'meteor/socialize:messaging';
 
 export function messagingPublications() {
-  const publicationOptionsSchema = new SimpleSchema({
-    limit: {
-      type: Number,
-      optional: true,
-    },
-    skip: {
-      type: Number,
-      optional: true,
-    },
-    sort: {
-      type: Number,
-      optional: true,
-    },
-  });
-
   /**
    * Searches for users
    * @param {String} query
@@ -55,12 +45,12 @@ export function messagingPublications() {
 
     return {
       find() {
-        return Meteor.conversations.find({ _id: conversationId }, { limit: 1 });
+        return ConversationsCollection.find({ _id: conversationId }, { limit: 1 });
       },
       children: [
         {
           find(conversation) {
-            return Meteor.participants.find({ conversationId: conversation._id, deleted: { $exists: false } });
+            return ParticipantsCollection.find({ conversationId: conversation._id, deleted: { $exists: false } });
           },
           children: [
             {
@@ -72,7 +62,7 @@ export function messagingPublications() {
         },
         {
           find(conversation) {
-            return Meteor.messages.find({ conversationId: conversation._id }, { limit: 1, sort: { date: -1 } });
+            return MessagesCollection.find({ conversationId: conversation._id }, { limit: 1, sort: { updatedAt: -1 } });
           },
         },
       ],
@@ -92,25 +82,40 @@ export function messagingPublications() {
 
     options = options || {};
 
-    options = _.pick(options, [ 'limit', 'skip' ]);
+    let { limit, skip, sort } = options;
 
-    check(options, publicationOptionsSchema);
+    if ( limit ) {
+      options.limit = limit;
+    }
+    if ( skip ) {
+      options.skip = skip;
+    }
 
-    options.sort = { date: -1 };
+    if ( !sort ) {
+      options.sort = { date: -1 };
+    } else {
+      options.sort = sort;
+    }
+
+    check(options, {
+      limit: Match.Optional(Number),
+      skip: Match.Optional(Number),
+      sort: Match.Optional(Object),
+    });
 
     return {
       find() {
-        return Meteor.participants.find({ userId: this.userId, deleted: { $exists: false } }, options);
+        return ParticipantsCollection.find({ userId: this.userId, deleted: { $exists: false } }, options);
       },
       children: [
         {
           find(participant) {
-            return Meteor.conversations.find({ _id: participant.conversationId });
+            return ConversationsCollection.find({ _id: participant.conversationId });
           },
           children: [
             {
               find(conversation) {
-                return Meteor.participants.find({ conversationId: conversation._id, deleted: { $exists: false } });
+                return ParticipantsCollection.find({ conversationId: conversation._id, deleted: { $exists: false } });
               },
               children: [
                 {
@@ -122,7 +127,10 @@ export function messagingPublications() {
             },
             {
               find(conversation) {
-                return Meteor.messages.find({ conversationId: conversation._id }, { limit: 1, sort: { date: -1 } });
+                return MessagesCollection.find(
+                  { conversationId: conversation._id },
+                  { limit: 1, sort: { updatedAt: -1 }}
+                );
               },
             },
           ],
@@ -142,17 +150,17 @@ export function messagingPublications() {
 
     return {
       find() {
-        return Meteor.participants.find({ userId: this.userId, deleted: { $exists: false }, read: false });
+        return ParticipantsCollection.find({ userId: this.userId, deleted: { $exists: false }, read: false });
       },
       children: [
         {
           find(participant) {
-            return Meteor.conversations.find({ _id: participant.conversationId });
+            return ConversationsCollection.find({ _id: participant.conversationId });
           },
           children: [
             {
               find(conversation) {
-                return Meteor.participants.find({ conversationId: conversation._id, deleted: { $exists: false } });
+                return ParticipantsCollection.find({ conversationId: conversation._id, deleted: { $exists: false } });
               },
               children: [
                 {
@@ -164,7 +172,10 @@ export function messagingPublications() {
             },
             {
               find(conversation) {
-                return Meteor.messages.find({ conversationId: conversation._id }, { limit: 1, sort: { date: -1 } });
+                return MessagesCollection.find(
+                  { conversationId: conversation._id },
+                  { limit: 1, sort: { updatedAt: -1 }}
+                );
               },
             },
           ],
@@ -177,7 +188,7 @@ export function messagingPublications() {
   * Publish messages for a particular conversation
   * @param   {String}       conversationId The _id of the conversation to fetch messages for
   * @param   {Object}       options        Query options {limit:Number, skip:Number}
-  * @returns {Mongo.Cursor} A cursor of messsages that belong to the current conversation
+  * @returns {Mongo.Cursor} A cursor of messages that belong to the current conversation
   */
   Meteor.publish('pm.messages.for', function (conversationId, options) {
     check(conversationId, String);
@@ -195,7 +206,7 @@ export function messagingPublications() {
     const conversation = Conversation.createEmpty(conversationId);
 
     if (user.isParticipatingIn(conversation)) {
-      return conversation.messages(options.limit, options.skip, 'date', -1);
+      return conversation.messages(options.limit, options.skip, 'updatedAt', -1);
     }
   });
 }
