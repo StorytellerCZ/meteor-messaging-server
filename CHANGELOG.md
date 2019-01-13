@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v1.0.0-alpha.1
+## v1.0.0 - 2019/01/13
 
 Adjusting everything for Socialize v1 release.
 

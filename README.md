@@ -1,6 +1,6 @@
 # storyteller:messaging-server
 
-Server functionality for `socialize:messaging` that adds publishes and some functionality which you can use on the client.
+Additional server functionality for `socialize:messaging`.
 
 ## How to use
 
