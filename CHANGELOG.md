@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## v1.1.0 - unreleased
+## v1.1.1 - 2019/02/11
+*    Remove missing sanitization function.
+
+## v1.1.0 - 2019/02/11
 
 *    Add `pm.conversation.new` function to allow creating conversations on the server or adding new message to existing conversation.
 

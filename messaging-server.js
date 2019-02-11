@@ -97,8 +97,8 @@ export function messagingMethods() {
         const participantsObjects = Meteor.users.find({ _id: { $in: participants}}).fetch();
         conversation.addParticipants(participantsObjects);
 
-        // sanitize
-        message = sanitize(message);
+        // TODO sanitize
+        // message = sanitize(message);
         // send the message
         conversation.sendMessage(message);
         return conversation._id;
