@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.1.0 - unreleased
+
+*    Add `pm.conversation.new` function to allow creating conversations on the server or adding new message to existing conversation.
+
 ## v1.0.2 - 2019/02/11
 
 *    Fix find in `pm.conversation.count` method.

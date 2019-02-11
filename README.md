@@ -58,3 +58,11 @@ Get messages in the given range for the given conversation.
 * conversationId {String} - id of the conversation
 
 Counts total number of messages in a given conversation.
+
+### `pm.conversation.new`
+
+**Params:**
+* to {Array} - Array of the users to send message to
+* message {String} - Text of the message
+
+Creates a new conversation to the given user with the given message. If a conversation already exists between the current user and the given users it will append the message to the already existing conversation instead of creating a new one.
