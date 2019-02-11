@@ -1,6 +1,14 @@
 # CHANGELOG
 
-## v1.0.0 - 2019/01/13
+## v1.0.2 - 2019/02/11
+
+*    Fix find in `pm.conversation.count` method.
+
+## v1.0.1 - 2019/01/13
+
+Adjusting everything for Socialize v1 release.
+
+## v1.0.0 - 2019/01/13 - unreleased
 
 Adjusting everything for Socialize v1 release.
 

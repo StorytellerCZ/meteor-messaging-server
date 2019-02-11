@@ -61,7 +61,7 @@ export function messagingMethods() {
      */
     'pm.conversation.count': conversationId => {
       check(conversationId, String);
-      return MessagesCollection.find({ conversationId }, { fields: { conversationId: 1 } }).count();
+      return MessagesCollection.find(conversationId, { fields: { conversationId: 1 } }).count();
     }
     // TODO send message for those who want to use the server instead of client
   });

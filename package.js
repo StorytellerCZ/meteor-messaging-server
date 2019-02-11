@@ -1,6 +1,6 @@
 Package.describe({
   name: 'storyteller:messaging-server',
-  version: '1.0.0',
+  version: '1.0.2',
   summary: 'Server functionality for socialize:messaging',
   git: 'https://github.com/StorytellerCZ/meteor-messaging-server',
   documentation: 'README.md'
