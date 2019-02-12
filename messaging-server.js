@@ -73,18 +73,21 @@ export function messagingMethods() {
     'pm.conversation.new': (to, message) => {
       check(to, Array);
       check(message, String);
-
+  
       const userId = Meteor.userId();
       if (!userId) {
         return;
       }
-
+  
       // Add current user to the array of participants
       const participants = to.concat([userId]);
-
+  
       // First check if a conversation already exists
-      const existingConversation = ConversationsCollection.findOne({ _participants: { $all: participants } }, { fields: { _participants: 1 } });
-
+      const existingConversation = ConversationsCollection.findOne(
+        { _participants: { $size: participants.length, $all: participants } },
+        { fields: { _participants: 1 } }
+      );
+  
       if (existingConversation) {
         // Add message to the latest conversation between these parties
         existingConversation.sendMessage(message);
@@ -92,13 +95,16 @@ export function messagingMethods() {
       } else {
         // create conversation
         const conversation = new Conversation().save();
-
+  
+        // Remove the last participant as that is the current user which gets added automatically
+        // and having him in this would lead to duplicates.
+        participants.pop();
         // add participants
         const participantsObjects = Meteor.users.find({ _id: { $in: participants}}).fetch();
         conversation.addParticipants(participantsObjects);
-
-        // TODO sanitize
-        // message = sanitize(message);
+  
+        // sanitize
+        message = sanitize(message);
         // send the message
         conversation.sendMessage(message);
         return conversation._id;
