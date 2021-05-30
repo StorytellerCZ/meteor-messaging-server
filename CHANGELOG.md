@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.2.0 - UNRELEASED
+*   Updated dependencies
+*   Cleanup of code
+*   Compatibility with Meteor 2.3
+*   Fixed a bug in `pm.conversation.new` method
+
 ## v1.1.1 - 2019/02/11
 *    Remove missing sanitization function.
 

@@ -8,7 +8,6 @@ import {
   MessagesCollection
 } from 'meteor/socialize:messaging';
 import { Counter } from 'meteor/natestrauser:publish-performant-counts';
-import { publishComposite } from 'meteor/reywood:publish-composite';
 
 export function messagingPublications() {
   /**
@@ -104,7 +103,7 @@ export function messagingMethods() {
         conversation.addParticipants(participantsObjects);
   
         // sanitize
-        message = sanitize(message);
+        // message = sanitize(message);
         // send the message
         conversation.sendMessage(message);
         return conversation._id;
