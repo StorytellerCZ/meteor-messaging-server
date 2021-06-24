@@ -7,7 +7,7 @@ Package.describe({
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom(['1.12', '2.3-beta.4']);
+  api.versionsFrom(['1.12', '2.3']);
   api.use(['meteor', 'accounts-base', 'ecmascript', 'check']);
   api.use([
     'socialize:messaging@1.2.2',
