@@ -25,7 +25,7 @@ export function messagingPublications() {
         _id: { $nin: excluded }
       },
       {
-        fields: {
+        projection: {
           username: 1,
           roles: 1
         },
@@ -57,10 +57,11 @@ export function messagingMethods() {
      * Counts the number of messages for the given conversation
      * @function pm.conversation.count
      * @param   {String}       conversationId The _id of the conversation count messages for
+     * @returns {Number}       The number of messages in the conversation
      */
     'pm.conversation.count': conversationId => {
       check(conversationId, String);
-      return MessagesCollection.find(conversationId, { fields: { conversationId: 1 } }).count();
+      return MessagesCollection.coundDocuments({ conversationId });
     },
     /**
      * Creates a new conversation between users or sends the message to the latest conversation between the users.
@@ -69,24 +70,24 @@ export function messagingMethods() {
      * @param message {String}
      * @returns {String} id of the conversation
      */
-    'pm.conversation.new': (to, message) => {
+    'pm.conversation.new': async (to, message) => {
       check(to, Array);
       check(message, String);
-  
+
       const userId = Meteor.userId();
       if (!userId) {
         return;
       }
-  
+
       // Add current user to the array of participants
       const participants = to.concat([userId]);
-  
+
       // First check if a conversation already exists
-      const existingConversation = ConversationsCollection.findOne(
+      const existingConversation = await ConversationsCollection.findOneAsync(
         { _participants: { $size: participants.length, $all: participants } },
-        { fields: { _participants: 1 } }
+        { projection: { _participants: 1 } }
       );
-  
+
       if (existingConversation) {
         // Add message to the latest conversation between these parties
         existingConversation.sendMessage(message);
@@ -94,14 +95,14 @@ export function messagingMethods() {
       } else {
         // create conversation
         const conversation = new Conversation().save();
-  
+
         // Remove the last participant as that is the current user which gets added automatically
         // and having him in this would lead to duplicates.
         participants.pop();
         // add participants
-        const participantsObjects = Meteor.users.find({ _id: { $in: participants}}).fetch();
+        const participantsObjects = await Meteor.users.find({ _id: { $in: participants}}).fetchAsync();
         conversation.addParticipants(participantsObjects);
-  
+
         // sanitize
         // message = sanitize(message);
         // send the message

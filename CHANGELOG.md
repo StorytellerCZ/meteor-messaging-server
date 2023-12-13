@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## v1.2.0 - UNRELEASED
+## v2.0.0 - 2023/12/13
+* Drop Meteor 1.x support
+* Minimum Meteor version is 2.8.1
+* Migrated relevant code to Async/Await
+
+## v1.2.0 - 2021/06/24
 *   Updated dependencies
 *   Cleanup of code
 *   Compatibility with Meteor 2.3
