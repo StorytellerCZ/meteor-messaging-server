@@ -59,9 +59,9 @@ export function messagingMethods() {
      * @param   {String}       conversationId The _id of the conversation count messages for
      * @returns {Number}       The number of messages in the conversation
      */
-    'pm.conversation.count': conversationId => {
-      check(conversationId, String);
-      return MessagesCollection.coundDocuments({ conversationId });
+    'pm.conversation.count': async (conversationId) => {
+      check(conversationId, String)
+      return await MessagesCollection.countDocuments({ conversationId })
     },
     /**
      * Creates a new conversation between users or sends the message to the latest conversation between the users.
